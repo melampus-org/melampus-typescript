@@ -1,0 +1,53 @@
+groups:
+  - id: registry.code_artifact
+    type: attribute_group
+    brief: Experimental Melampus runtime contract evidence.
+    attributes:
+      - id: code_artifact.schema.version
+        type: "string"
+        stability: development
+        brief: "Private wire schema version; exactly 0.1.0."
+        examples: ["0.1.0"]
+      - id: code_artifact.function
+        type: "string"
+        stability: development
+        brief: "Stable module:qualified_name; at most 256 characters."
+        examples: ["demo:price"]
+      - id: code_artifact.generator
+        type: "string"
+        stability: development
+        brief: "Declared authoring tool identifier; at most 64 ASCII identifier characters."
+        examples: ["unspecified"]
+      - id: code_artifact.intent.hash
+        type: "string"
+        stability: development
+        brief: "Lowercase SHA-256 of exact intent UTF-8 bytes."
+        examples:
+          ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+      - id: code_artifact.assumptions.hash
+        type: "string"
+        stability: development
+        brief: "SHA-256 of ordered assumptions as compact UTF-8 JSON."
+        examples:
+          ["bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]
+      - id: code_artifact.check.ids
+        type: "string[]"
+        stability: development
+        brief: "Unique check identifiers in declaration order; 0 to 16 entries, each at most 64 ASCII identifier characters."
+        examples: [["nonnegative"]]
+      - id: code_artifact.check.contract_hashes
+        type: "string[]"
+        stability: development
+        brief: "SHA-256 of each exact contract UTF-8 text; aligned with check.ids."
+        examples:
+          [["cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"]]
+      - id: code_artifact.check.sample_rates
+        type: "double[]"
+        stability: development
+        brief: "Finite sampling probabilities in [0,1], aligned with check.ids."
+        examples: [[1.0]]
+      - id: code_artifact.check.results
+        type: "string[]"
+        stability: development
+        brief: "Aligned terminal results: passed, failed, error, sampled_out, budget, disabled, not_executed."
+        examples: [["passed"]]

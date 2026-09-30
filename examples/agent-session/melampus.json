@@ -1,0 +1,7 @@
+{
+  "contracts": "intent.ts",
+  "probe": "exercise.ts",
+  "watch": ["pricing.ts"],
+  "protect": ["CLAUDE.md", ".claude/settings.json"],
+  "timeout": 5
+}

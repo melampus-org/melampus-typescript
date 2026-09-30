@@ -1,0 +1,18 @@
+{
+  "trace_id": "01010101010101010101010101010101",
+  "span_id": "0202020202020202",
+  "attributes": {
+    "code_artifact.schema.version": "0.1.0",
+    "code_artifact.function": "demo:price",
+    "code_artifact.generator": "unspecified",
+    "code_artifact.intent.hash": "29a43aa2a1849ad3d50d5b04e1517616fd2ddcce5b3f6cc89370a1dd708b2d4a",
+    "code_artifact.assumptions.hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "code_artifact.check.ids": ["nonnegative"],
+    "code_artifact.check.contract_hashes": [
+      "7c9c7e4a821f6f80f91caf1d687ac02d857632dd12cf82aea7be0e100e7327b0"
+    ],
+    "code_artifact.check.sample_rates": [1.0],
+    "code_artifact.check.results": ["budget"]
+  },
+  "expected_findings": 0
+}

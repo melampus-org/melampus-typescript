@@ -1,0 +1,52 @@
+name: deploy-pages
+
+# Publishes the static HTML in site/ to GitHub Pages via the Actions
+# deployment path (build_type=workflow), not the legacy branch path.
+# Only fires when site content (or this workflow) changes, plus a manual
+# trigger so you can redeploy on demand.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+# Least-privilege token: read the repo, write Pages, mint the OIDC token
+# that deploy-pages uses to authenticate the deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two Pages deployments race. Queue rather than cancel so an
+# in-flight publish is allowed to finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+# Hardening: every action is pinned to an immutable commit SHA (tag in a trailing
+# comment), not a movable @vN tag, so a repointed upstream tag can't change CI.
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          # The "specific path" the site is served from. Everything under
+          # site/ is published; site/index.html is the entry point.
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

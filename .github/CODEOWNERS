@@ -1,0 +1,26 @@
+# CODEOWNERS — defines who must review changes before merge.
+#
+# Prefer GitHub teams (@org/team) as owners: ownership survives staff changes
+# and a whole team shares the review load. Solo-maintained repos can list an
+# individual (@username) directly and swap in a team once one exists — an
+# accurate individual owner beats an aspirational team that doesn't exist yet.
+# The ruleset on main has "require code owner review" enabled, so any PR that
+# touches a path below requires approval from the listed owner.
+#
+# NOTE for solo repos: GitHub blocks self-approval. A sole codeowner behind
+# "require code owner review" with no ruleset bypass actor can never merge —
+# harden_repo.sh detects this and offers --allow-admin-bypass.
+#
+# Order matters: the LAST matching pattern wins for a given file.
+
+# Default owner for everything in the repo.
+*                       @melampus-admin
+
+# Lock down the automation and governance surface specifically — changes here
+# affect every deployment and the protection rules themselves.
+/.github/               @melampus-admin
+/.github/workflows/     @melampus-admin
+
+# The published site (served folder). Point this at a content/docs team if that differs from
+# the platform owners; otherwise leave it as the default owner.
+/site/                  @melampus-admin
