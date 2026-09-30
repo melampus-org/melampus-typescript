@@ -1,0 +1,27 @@
+name: Version Guard
+on:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: version-guard-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  version-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "24"
+      - name: Check version files and monotonic changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          node scripts/check-version.mjs
+          if git diff --name-only "$BASE_SHA" HEAD | grep -qx 'VERSION'; then
+            node scripts/check-version.mjs --strict
+          fi

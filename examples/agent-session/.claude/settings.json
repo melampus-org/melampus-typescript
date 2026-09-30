@@ -1,0 +1,52 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/../../dist/cli.js\" hook --state \"$CLAUDE_PROJECT_DIR/.melampus/session.json\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/../../dist/cli.js\" hook --state \"$CLAUDE_PROJECT_DIR/.melampus/session.json\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/../../dist/cli.js\" hook --state \"$CLAUDE_PROJECT_DIR/.melampus/session.json\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/../../dist/cli.js\" hook --state \"$CLAUDE_PROJECT_DIR/.melampus/session.json\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

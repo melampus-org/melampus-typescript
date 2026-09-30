@@ -1,0 +1,95 @@
+/*
+ * OPSWAT brand tokens for GitHub Pages site/ content.
+ * Source: https://www.opswat.com/brand/colors · https://www.opswat.com/brand/fonts
+ *
+ * Typography: Simplon Norm is the brand primary; Roboto is the approved fallback
+ * when Simplon is unavailable (e.g. GitHub Pages). Roboto Mono for labels/code.
+ *
+ * Color usage: reserve Blue 700 for actions and links; do not use action or accent
+ * hues for headlines. Accents should stay under ~5% of any layout.
+ */
+
+:root {
+  /* Neutral */
+  --neutral-1200: #0c121d;
+  --neutral-1100: #141b27;
+  --neutral-1000: #172234;
+  --neutral-900: #24324b;
+  --neutral-800: #344565;
+  --neutral-700: #475b81;
+  --neutral-600: #607497;
+  --neutral-500: #a9b2c4;
+  --neutral-400: #c7ccd5;
+  --neutral-300: #dee0e4;
+  --neutral-200: #ebecee;
+  --neutral-100: #f8f9f9;
+  --white: #ffffff;
+  --black: #000000;
+
+  /* Blue — action & links */
+  --blue-900: #123d8b;
+  --blue-800: #1854c3;
+  --blue-700: #1d6bfc;
+  --blue-600: #357bfc;
+  --blue-500: #5690fd;
+  --blue-100: #e8f0ff;
+  --navy-1000: #0d2654;
+
+  /* Accents — sparing use */
+  --teal-900: #018288;
+  --teal-100: #e8feff;
+  --green-900: #009165;
+  --green-100: #dffff5;
+  --orange-700: #ff6b00;
+  --orange-100: #ffebde;
+
+  /* Semantic aliases (used by page styles) */
+  --paper: var(--neutral-100);
+  --ink: var(--neutral-1200);
+  --mid: var(--neutral-600);
+  --line: var(--neutral-300);
+  --action: var(--blue-700);
+  --action-strong: var(--blue-800);
+  --action-soft: var(--blue-100);
+  --headline-accent: var(--navy-1000);
+  --blue: var(--blue-800);
+  --green: var(--green-900);
+  --green-text: var(--green-900);
+  --orange: var(--orange-700);
+
+  --font-body: Roboto, Arial, sans-serif;
+  --font-head: Roboto, Arial, sans-serif;
+  --font-mono: "Roboto Mono", ui-monospace, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+.font-head {
+  font-family: var(--font-head);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: var(--blue-100);
+}
+
+a {
+  color: inherit;
+}

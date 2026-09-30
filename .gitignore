@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+*.tgz
+.melampus/
+.DS_Store
+.serena/
+.reference-python/
