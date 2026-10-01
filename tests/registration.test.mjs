@@ -201,15 +201,51 @@ test("invalid registrations leave ordinary targets unchanged without invoking ac
   instrument(target, options({ price: positive })); // failed registration did not mark it registered
 });
 
-test("unsupported inheritance and immutable methods fail explicitly", () => {
+test("inherited methods preserve private state and respect nearest overrides", () => {
+  class Base {
+    #base = 4;
+    price(n) {
+      return this.#base + n;
+    }
+  }
+  class Child extends Base {}
+  const original = Base.prototype.price;
+  const child = instrument(new Child(), options({ price: positive }));
+  assert.equal(child.price(2), 6);
+  assert.equal(latest().name, "test:Service.price");
+  assert.equal(Base.prototype.price, original);
+  assert.equal(new Child().price(2), 6);
+  class Override extends Base {
+    price(n) {
+      return super.price(n) * 2;
+    }
+  }
+  assert.equal(
+    instrument(new Override(), options({ price: positive })).price(2),
+    12,
+  );
+  class Accessor extends Base {
+    get price() {
+      throw new Error("must not run");
+    }
+  }
+  assert.throws(
+    () => instrument(new Accessor(), options({ price: positive })),
+    /accessors/,
+  );
+  class Field extends Base {
+    price = 1;
+  }
+  assert.throws(() => instrument(new Field(), options({ price: positive })));
+});
+
+test("immutable methods and Object.prototype methods fail explicitly", () => {
   class Base {
     price() {
       return 1;
     }
   }
-  class Child extends Base {}
   for (const target of [
-    new Child(),
     Object.freeze(new Base()),
     Object.freeze({ price: () => 1 }),
     Object.create(null),

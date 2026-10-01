@@ -30,7 +30,7 @@ const registered = new WeakSet<object>();
 /**
  * Install wrappers on selected methods of this object and return the same object.
  * Register before sharing instances or capturing method references. Only own
- * methods and methods on the immediate prototype are supported by this pilot.
+ * methods and public prototype methods are supported, including inherited ones.
  */
 export function instrument<T extends object>(
   target: T,
@@ -68,15 +68,19 @@ export function instrument<T extends object>(
     if (!(contract instanceof Contract))
       throw new TypeError(`Contract for ${key} must be a reviewed Contract`);
     const own = Object.getOwnPropertyDescriptor(target, key);
-    const prototype = Object.getPrototypeOf(target);
-    const descriptor =
-      own ??
-      (prototype !== Object.prototype && prototype !== null
-        ? Object.getOwnPropertyDescriptor(prototype, key)
-        : undefined);
+    let descriptor = own;
+    let prototype = Object.getPrototypeOf(target);
+    while (
+      !descriptor &&
+      prototype !== Object.prototype &&
+      prototype !== null
+    ) {
+      descriptor = Object.getOwnPropertyDescriptor(prototype, key);
+      prototype = Object.getPrototypeOf(prototype);
+    }
     if (!descriptor || typeof descriptor.value !== "function")
       throw new TypeError(
-        `Method ${key} must be an own function or immediate prototype method; accessors and inherited methods are unsupported`,
+        `Method ${key} must be an own function or public prototype method; accessors are unsupported`,
       );
     if (own ? !own.configurable && !own.writable : !Object.isExtensible(target))
       throw new TypeError(`Method ${key} cannot be replaced on this object`);

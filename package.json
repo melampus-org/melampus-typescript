@@ -1,6 +1,6 @@
 {
   "name": "melampus-typescript",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Keep AI coding sessions aligned with reviewed intent and local execution evidence.",
   "type": "module",
   "license": "Apache-2.0",

@@ -1,15 +1,16 @@
 # Release operations
 
-0.1.0 is an experimental alpha in development. npm publication is separate from
+0.2.0 is an experimental alpha. npm publication is separate from
 GitHub release creation. The intended package name is `melampus-typescript`;
 registry ownership and trusted publishing must be established before publication.
 
 ## Reviewed release
 
 1. Update VERSION, package.json, package-lock.json and a matching CHANGELOG.md heading.
-2. Run npm run ci and npm run demo. Open a reviewed PR; version-guard validates
+2. Run npm run ci, npm run demo, npm run demo:registration and npm run demo:pilot.
+   Open a reviewed PR; version-guard validates
    that changed versions exceed existing tags.
-3. After the PR merges, Release reruns CI, creates the annotated version tag,
+3. After the PR merges, Release reruns CI and the three demos, creates the annotated version tag,
    and attaches the validated npm tarball to a GitHub prerelease. Never tag manually.
 4. The workflow is idempotent and refuses a preexisting tag on a different commit.
 

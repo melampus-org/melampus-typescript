@@ -37,6 +37,7 @@ try {
     "LICENSE",
     "VERSION",
     "examples/agent-session/intent.ts",
+    "examples/agent-session/registration.ts",
     "examples/sdk-registration/registration.ts",
     "dist/registration.js",
     "dist/registration.d.ts",
@@ -109,7 +110,7 @@ try {
     temp,
   );
   console.log(
-    `Verified ${pack.filename}: exports, declarations, CLI and both installed session examples`,
+    `Verified ${pack.filename}: exports, declarations, CLI, both installed session examples and synthetic pilot study`,
   );
   if (process.argv.includes("--keep"))
     run("npm", [

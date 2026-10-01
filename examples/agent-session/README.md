@@ -1,5 +1,9 @@
 # Pricing repair example
 
+`pricing.ts` contains plain business logic. `registration.ts` registers the module
+object once with PRICE; `exercise.ts` calls through that object. The registration
+and reviewed claims are protected while the agent repairs pricing.ts.
+
 From the repository root, run `npm ci && npm run build`. Then:
 
 ```sh

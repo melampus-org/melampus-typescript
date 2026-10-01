@@ -1,7 +1,9 @@
-# Class and module registration pilot
+# Class and module registration
 
-This is an unreleased prototype. The published v0.1.0 artifact does not contain
-`instrument`. Existing `instrumented` and `Contract.instrument` APIs remain available.
+`instrument` is available starting with 0.2.0 alpha and is the recommended
+setup for class instances and module objects. Existing `instrumented` and
+`Contract.instrument` APIs remain available. The v0.1.0 artifact only contains
+the function APIs.
 
 ## Register once
 
@@ -59,13 +61,14 @@ supplies its intent, checks, assumptions, and sampling.
   instance. No Proxy, class replacement, or prototype mutation is used. Each new
   instance needs registration. Wrapping a prototype method adds an own property,
   so reflection can observe this change.
-- Own function properties (including arrow fields) and immediate prototype
-  methods are supported. Public methods can use `#private` state. Ordinary
+- Own function properties (including arrow fields) and public prototype
+  methods, including inherited methods, are supported. Discovery respects the
+  nearest definition and stops before `Object.prototype`. Public methods can use `#private` state. Ordinary
   `this.otherMethod()` calls reach registered wrappers. Receivers are preserved,
   not automatically bound; detached methods still need the caller to supply `this`.
 - Accessors, symbols, private methods, constructor/static-class registration,
-  generators, and methods inherited from farther up the prototype chain are
-  outside this pilot. Selecting them fails explicitly. Missing methods, empty
+  generators, and `Object.prototype` methods are
+  unsupported in this alpha. Selecting them fails explicitly. Missing methods, empty
   maps, and methods that cannot be replaced also fail. Getters are not invoked
   during discovery. Validation precedes writes for ordinary targets; user-defined
   Proxies and exotic objects are unsupported.
@@ -100,7 +103,7 @@ covers supported libraries; it cannot supply reviewed business predicates for us
 
 Decorators are deferred: [Node 22](https://nodejs.org/docs/latest-v22.x/api/typescript.html#typescript-features)
 does not transform them, and [modern/legacy TypeScript decorators](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html)
-have different semantics. Optional adapters can follow the pilot. Preserving sync
+have different semantics. Optional adapters can follow once participant feedback justifies them. Preserving sync
 behavior matters: [AWS Powertools](https://docs.aws.amazon.com/powertools/typescript/latest/features/tracer/)
 documents that its method decorator can convert sync methods to async.
 
