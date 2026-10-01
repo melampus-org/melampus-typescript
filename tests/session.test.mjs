@@ -120,6 +120,73 @@ test("missing instrumentation, substituted predicates, skipped checks and app er
   assert.equal(report.exit_code, 2);
   assert.deepEqual(report.undeclared, ["pricing:price"]);
 });
+test("class instances share reviewed contracts; drift, missing checks and substitutions still fail", async (t) => {
+  const p = project(t);
+  p.write(
+    "intent.ts",
+    p.read("intent.ts").replace("pricing:price", "pricing:Service.price"),
+  );
+  const source = `import { instrument } from ${JSON.stringify(sdkUrl)};
+import { PRICE } from './intent.ts';
+class Service { price(n: number) { return Math.max(0, n); } }
+export const first = instrument(new Service(), { namespace: 'pricing:Service', contracts: { price: PRICE } });
+export const second = instrument(new Service(), { namespace: 'pricing:Service', contracts: { price: PRICE } });`;
+  p.write("pricing.ts", source);
+  p.write(
+    "exercise.ts",
+    "import { first, second } from './pricing.ts'; first.price(-1); second.price(2);",
+  );
+  assert.equal((await new Supervisor(p.config).check()).exit_code, 0);
+  p.write("pricing.ts", source.replace("Math.max", "Math.min"));
+  const drifted = await new Supervisor(p.config).check();
+  assert.equal(drifted.exit_code, 1);
+  assert.equal(drifted.findings[0].function, "pricing:Service.price");
+  p.write("pricing.ts", source);
+  p.write("exercise.ts", "import './pricing.ts';");
+  const missing = await new Supervisor(p.config).check();
+  assert.equal(missing.exit_code, 2);
+  assert.deepEqual(missing.missing, ["pricing:Service.price/nonnegative"]);
+  p.write(
+    "exercise.ts",
+    "import { first, second } from './pricing.ts'; first.price(1); second.price(2);",
+  );
+  const substitution = `import { Check, Contract } from ${JSON.stringify(sdkUrl)};
+const FAKE = new Contract({ intent: PRICE.intent, checks: [new Check('nonnegative', () => true, 'Nonnegative')] });`;
+  // Test both orderings: a subsequent correct declaration cannot erase a mismatch.
+  for (const name of ["first", "second"]) {
+    p.write(
+      "pricing.ts",
+      source
+        .replace("export const first", substitution + "\nexport const first")
+        .replace(
+          `export const ${name} = instrument(new Service(), { namespace: 'pricing:Service', contracts: { price: PRICE } })`,
+          `export const ${name} = instrument(new Service(), { namespace: 'pricing:Service', contracts: { price: FAKE } })`,
+        ),
+    );
+    const report = await new Supervisor(p.config).check();
+    assert.equal(report.exit_code, 2);
+    assert.deepEqual(report.contract_mismatch, ["pricing:Service.price"]);
+  }
+});
+
+test("module registration is accepted by sessions and absent method execution stays incomplete", async (t) => {
+  const p = project(t);
+  p.write(
+    "pricing.ts",
+    `import { instrument } from ${JSON.stringify(sdkUrl)};
+import { PRICE } from './intent.ts';
+const price = (n: number) => Math.max(0, n);
+export const pricing = instrument({ price }, { namespace: 'pricing', contracts: { price: PRICE } });`,
+  );
+  p.write(
+    "exercise.ts",
+    "import { pricing } from './pricing.ts'; pricing.price(-1); pricing.price(2);",
+  );
+  assert.equal((await new Supervisor(p.config).check()).exit_code, 0);
+  p.write("exercise.ts", "import './pricing.ts';");
+  assert.equal((await new Supervisor(p.config).check()).exit_code, 2);
+});
+
 test("protected files, disappearance and escaping symlinks cannot preserve green state", async (t) => {
   const p = project(t);
   const s = new Supervisor(p.config);

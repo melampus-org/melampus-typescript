@@ -1,4 +1,4 @@
-# TypeScript 0.1.0 port contract
+# TypeScript port contract
 
 Reference: [melampus-python at 9518b44](https://github.com/melampus-org/melampus-python/tree/9518b44dfb580305832f6499ff5fead98a6c1ee6),
 including the local agent-session workflow introduced by ADR-0008.
@@ -6,7 +6,7 @@ including the local agent-session workflow introduced by ADR-0008.
 | Area                 | TypeScript decision                                                                                  |
 | -------------------- | ---------------------------------------------------------------------------------------------------- |
 | Runtime              | Node 22.18+ ESM; Linux/macOS local supervision                                                       |
-| Function declaration | Explicit stable module:function path; typed wrapper instead of decorator                             |
+| Function declaration | Explicit stable paths; typed object registration (0.2.0+) or function wrappers                       |
 | Check                | Frozen object; synchronous boolean predicate over fulfilled result                                   |
 | Async                | Promises/thenables settle before checks; return Promise identity is not preserved                    |
 | Wire                 | Identical schema 0.1.0 attributes, ordered arrays, hashes, results and 16-check bound                |
@@ -18,6 +18,9 @@ including the local agent-session workflow introduced by ADR-0008.
 | Ownership            | Atomic lock directory; conservative manual cleanup after abnormal termination                        |
 | HTTP                 | Adds bounded chunked transport for standard JavaScript OTel exporter compatibility                   |
 | Packaging            | npm ESM package, declarations, CLI, examples, Apache-2.0 license                                     |
+
+SDK 0.2.0 adds class and module registration while retaining wire schema 0.1.0
+and compatibility with the original function APIs. See [registration boundaries](SDK-REGISTRATION.md).
 
 Node executes scenario TypeScript with native type stripping, not type checking.
 Use erasable syntax, explicit file extensions and a separate tsc check. Native

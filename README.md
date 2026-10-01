@@ -4,7 +4,7 @@ Keep AI coding sessions aligned with reviewed intent and fresh local execution e
 TypeScript counterpart of [melampus-python](https://github.com/melampus-org/melampus-python),
 with the same experimental `code_artifact` wire schema.
 
-**0.1.0 alpha is in development. No npm publication is claimed.** Node.js 22.18+,
+**0.2.0 alpha. npm publication is separate from GitHub releases.** Node.js 22.18+,
 ES modules; local sessions target macOS/Linux. Install from this checkout:
 
 ```sh
@@ -49,16 +49,34 @@ export const PRICE = new Contract<number>({
 export const CONTRACTS = { "pricing:price": PRICE };
 ```
 
-Instrument the implementation in `pricing.ts`:
+Keep business functions plain in `pricing.ts`:
 
 ```ts
+export function price(cents: number): number {
+  return Math.max(0, cents);
+}
+```
+
+Register once at the application boundary in `registration.ts`:
+
+```ts
+import { instrument } from "melampus-typescript";
+import { price } from "./pricing.ts";
 import { PRICE } from "./intent.ts";
 
-export const price = PRICE.instrument({
-  path: "pricing:price",
-  generator: "claude-code",
-})((cents: number) => Math.max(0, cents));
+export const pricing = instrument(
+  { price },
+  {
+    namespace: "pricing",
+    contracts: { price: PRICE },
+    generator: "claude-code",
+  },
+);
+pricing.price(-100);
 ```
+
+Call through the registered object. Original imports and previously captured
+references bypass instrumentation. Only configured methods are checked.
 
 The supervisor runs reviewed scenarios in fresh Node processes, verifies the
 exact reviewed Check objects, and requires every declared check to execute.
@@ -71,6 +89,40 @@ Python's inferred `module:qualified_name`. Generators are unsupported.
 The core entry point uses only the OTel API and configures no provider/exporter;
 CLI subpaths load the installed SDK and protobuf dependencies. Without a
 recording tracer, checks do not execute. Applications own export and flushing.
+
+## Register a class instance once
+
+Use the same API for a class instance:
+
+```ts
+import { instrument } from "melampus-typescript";
+import { PRICE } from "./intent.ts";
+
+class PricingService {
+  price(cents: number): number {
+    return Math.max(0, cents);
+  }
+}
+
+const pricing = instrument(new PricingService(), {
+  namespace: "pricing:PricingService",
+  contracts: { price: PRICE },
+});
+pricing.price(-100);
+```
+
+Register its reviewed path as `pricing:PricingService.price`. Register each
+instance before sharing it; methods can use private state and inherited public
+methods. The target is modified in place and returned with its original type.
+Business methods need no wrappers or decorators. Function-level `instrumented`
+and `Contract.instrument` remain available for small integrations.
+
+Run `npm run demo:registration` to compare wrapper, class, and module styles.
+Run `npm run demo:pilot` to validate all pilot worksheet measures, or
+`npm run pilot -- --participant p01 --rotation 0` for a timed participant study.
+The [study guide](examples/pilot-study/README.md) explains tasks and exported reports.
+See [API boundaries](docs/SDK-REGISTRATION.md) and the
+[runnable pilot and feedback worksheet](examples/sdk-registration/README.md).
 
 ## Observe OTLP evidence
 

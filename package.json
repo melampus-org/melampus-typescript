@@ -1,6 +1,6 @@
 {
   "name": "melampus-typescript",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Keep AI coding sessions aligned with reviewed intent and local execution evidence.",
   "type": "module",
   "license": "Apache-2.0",
@@ -56,6 +56,9 @@
     "check:package": "node scripts/check-package.mjs",
     "ci": "npm run check:version && npm run check:semconv && npm run lint && npm run build && npm run typecheck && npm run test:coverage && npm run check:package",
     "demo": "npm run build && node scripts/demo.mjs",
+    "demo:registration": "npm run build && node scripts/demo-registration.mjs",
+    "pilot": "npm run build && node examples/pilot-study/cli.mjs",
+    "demo:pilot": "npm run build && node examples/pilot-study/cli.mjs --demo",
     "prepack": "npm run build"
   },
   "peerDependencies": {

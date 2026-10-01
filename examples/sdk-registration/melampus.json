@@ -1,0 +1,7 @@
+{
+  "contracts": "intent.ts",
+  "probe": "exercise.ts",
+  "watch": ["wrapper.ts", "service.ts", "functions.ts", "registration.ts"],
+  "protect": [],
+  "timeout": 5
+}

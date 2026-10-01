@@ -32,6 +32,8 @@ jobs:
       - run: npm ci
       - run: npm run ci
       - run: npm run demo
+      - run: npm run demo:registration
+      - run: npm run demo:pilot
   interoperability:
     runs-on: ubuntu-latest
     steps:

@@ -1,14 +1,39 @@
 import assert from "node:assert/strict";
-import { rmSync } from "node:fs";
+import {
+  cpSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { Supervisor, hookDecision } from "../dist/session.js";
-import { project, healthy, drift } from "../tests/helpers.mjs";
-const p = project();
+
+const root = mkdtempSync(join(tmpdir(), "melampus-demo-"));
 try {
-  const supervisor = new Supervisor(p.config);
+  cpSync(new URL("../examples/agent-session/", import.meta.url), root, {
+    recursive: true,
+  });
+  writeFileSync(join(root, "package.json"), '{"private":true,"type":"module"}');
+  const sdk = new URL("../dist/index.js", import.meta.url).href;
+  for (const file of ["intent.ts", "registration.ts"]) {
+    const path = join(root, file);
+    writeFileSync(
+      path,
+      readFileSync(path, "utf8").replace(
+        '"melampus-typescript"',
+        JSON.stringify(sdk),
+      ),
+    );
+  }
+  const implementation = join(root, "pricing.ts");
+  const healthy = readFileSync(implementation, "utf8");
+  const supervisor = new Supervisor(join(root, "melampus.json"));
   let report = await supervisor.check();
   assert.equal(report.exit_code, 0);
   console.log("HEALTHY", JSON.stringify(report));
-  p.write("pricing.ts", drift);
+  writeFileSync(implementation, healthy.replace("Math.max", "Math.min"));
   report = await supervisor.check();
   assert.equal(report.exit_code, 1);
   assert.equal(
@@ -16,10 +41,10 @@ try {
     "block",
   );
   console.log("DRIFT → BLOCK", JSON.stringify(report));
-  p.write("pricing.ts", healthy);
+  writeFileSync(implementation, healthy);
   report = await supervisor.check();
   assert.equal(report.exit_code, 0);
   console.log("REPAIRED → HEALTHY", JSON.stringify(report));
 } finally {
-  rmSync(p.root, { recursive: true, force: true });
+  rmSync(root, { recursive: true, force: true });
 }
