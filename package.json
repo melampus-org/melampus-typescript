@@ -57,6 +57,8 @@
     "ci": "npm run check:version && npm run check:semconv && npm run lint && npm run build && npm run typecheck && npm run test:coverage && npm run check:package",
     "demo": "npm run build && node scripts/demo.mjs",
     "demo:registration": "npm run build && node scripts/demo-registration.mjs",
+    "pilot": "npm run build && node examples/pilot-study/cli.mjs",
+    "demo:pilot": "npm run build && node examples/pilot-study/cli.mjs --demo",
     "prepack": "npm run build"
   },
   "peerDependencies": {

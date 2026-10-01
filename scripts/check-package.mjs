@@ -40,6 +40,8 @@ try {
     "examples/sdk-registration/registration.ts",
     "dist/registration.js",
     "dist/registration.d.ts",
+    "examples/pilot-study/cli.mjs",
+    "examples/pilot-study/README.md",
   ])
     if (!paths.includes(required))
       throw new Error(`Package missing ${required}`);
@@ -94,6 +96,18 @@ try {
   );
   const pilot = `import { Supervisor } from 'melampus-typescript/session'; const r = await new Supervisor(${JSON.stringify(join(temp, "registration-example/melampus.json"))}).check(); if(r.exit_code !== 0) throw new Error(JSON.stringify(r));`;
   run(process.execPath, ["--input-type=module", "-e", pilot], temp);
+  run(
+    process.execPath,
+    [
+      join(installed, "examples/pilot-study/cli.mjs"),
+      "--demo",
+      "--participant",
+      "package-smoke",
+      "--dir",
+      join(temp, "pilot-study"),
+    ],
+    temp,
+  );
   console.log(
     `Verified ${pack.filename}: exports, declarations, CLI and both installed session examples`,
   );

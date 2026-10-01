@@ -39,6 +39,19 @@ Calls to imported `price()` directly bypass the module object's wrapper. Use
 
 ## Pilot feedback worksheet
 
+Run the [measured pilot study](../pilot-study/README.md) to collect every field:
+
+```sh
+npm run demo:pilot                           # synthetic end-to-end validation
+npm run pilot -- --participant p01 --rotation 0  # real participant, timed tasks
+```
+
+It generates editable projects, verifies milestones with fresh gates, collects
+quiz/diagnosis answers and feedback, and exports the worksheet as Markdown, CSV,
+and JSON. Use rotations 0–5 across successive participants. Timers support pause
+and resume. Synthetic reports are explicitly labeled and excluded from usability
+conclusions.
+
 Have participants try all three styles on the same small service, rotating the
 order between participants. Use their normal editor and runtime. Record:
 

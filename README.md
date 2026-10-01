@@ -102,6 +102,9 @@ Only configured methods are checked. The published v0.1.0 artifact does not incl
 this prototype.
 
 Run `npm run demo:registration` to compare wrapper, class, and module styles.
+Run `npm run demo:pilot` to validate all pilot worksheet measures, or
+`npm run pilot -- --participant p01 --rotation 0` for a timed participant study.
+The [study guide](examples/pilot-study/README.md) explains tasks and exported reports.
 See [API boundaries](docs/SDK-REGISTRATION.md) and the
 [runnable pilot and feedback worksheet](examples/sdk-registration/README.md).
 
