@@ -41,8 +41,9 @@ export async function evaluate(config: { contracts: string; probe: string }) {
   setDeclarationValidator((path, intent, checks, assumptions) => {
     const contract = contracts[path];
     if (!contract) return;
+    // Multiple service instances may share one declaration. Every registration
+    // must still match the reviewed checks by identity; any conflict stays sticky.
     if (
-      declarations.has(path) ||
       intent !== contract.intent ||
       JSON.stringify(assumptions) !== JSON.stringify(contract.assumptions) ||
       checks.length !== contract.checks.length ||

@@ -37,6 +37,9 @@ try {
     "LICENSE",
     "VERSION",
     "examples/agent-session/intent.ts",
+    "examples/sdk-registration/registration.ts",
+    "dist/registration.js",
+    "dist/registration.d.ts",
   ])
     if (!paths.includes(required))
       throw new Error(`Package missing ${required}`);
@@ -84,8 +87,15 @@ try {
   });
   const script = `import { Supervisor } from 'melampus-typescript/session'; const r = await new Supervisor(${JSON.stringify(join(temp, "example/melampus.json"))}).check(); if(r.exit_code !== 0) throw new Error(JSON.stringify(r));`;
   run(process.execPath, ["--input-type=module", "-e", script], temp);
+  cpSync(
+    join(installed, "examples/sdk-registration"),
+    join(temp, "registration-example"),
+    { recursive: true },
+  );
+  const pilot = `import { Supervisor } from 'melampus-typescript/session'; const r = await new Supervisor(${JSON.stringify(join(temp, "registration-example/melampus.json"))}).check(); if(r.exit_code !== 0) throw new Error(JSON.stringify(r));`;
+  run(process.execPath, ["--input-type=module", "-e", pilot], temp);
   console.log(
-    `Verified ${pack.filename}: exports, declarations, CLI and installed session example`,
+    `Verified ${pack.filename}: exports, declarations, CLI and both installed session examples`,
   );
   if (process.argv.includes("--keep"))
     run("npm", [

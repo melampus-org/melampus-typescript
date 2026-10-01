@@ -72,6 +72,39 @@ The core entry point uses only the OTel API and configures no provider/exporter;
 CLI subpaths load the installed SDK and protobuf dependencies. Without a
 recording tracer, checks do not execute. Applications own export and flushing.
 
+## Register a class or module once (unreleased pilot)
+
+The prototype adds `instrument` to group method contracts at application setup:
+
+```ts
+import { instrument } from "melampus-typescript";
+import { PRICE } from "./intent.ts";
+
+function price(cents: number): number {
+  return Math.max(0, cents);
+}
+
+export const pricing = instrument(
+  { price },
+  {
+    namespace: "pricing",
+    contracts: { price: PRICE },
+  },
+);
+pricing.price(-100);
+```
+
+This works with the `pricing:price` registry above. For a class, pass an instance
+and a namespace such as `pricing:PricingService`, and register its required path
+as `pricing:PricingService.price`. Business methods need no wrappers or decorators.
+The target is modified in place; original function references bypass wrappers.
+Only configured methods are checked. The published v0.1.0 artifact does not include
+this prototype.
+
+Run `npm run demo:registration` to compare wrapper, class, and module styles.
+See [API boundaries](docs/SDK-REGISTRATION.md) and the
+[runnable pilot and feedback worksheet](examples/sdk-registration/README.md).
+
 ## Observe OTLP evidence
 
 ```sh
